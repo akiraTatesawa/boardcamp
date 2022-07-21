@@ -1,0 +1,43 @@
+{
+  "name": "projeto15-boardcamp",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/index.js",
+    "dev": "nodemon ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/akiraTatesawa/boardcamp.git"
+  },
+  "keywords": [
+    "boardcamp",
+    "postgres",
+    "node",
+    "express"
+  ],
+  "author": "Arthur Akira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/akiraTatesawa/boardcamp/issues"
+  },
+  "homepage": "https://github.com/akiraTatesawa/boardcamp#readme",
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.20.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "nodemon": "^2.0.19",
+    "prettier": "^2.7.1"
+  }
+}

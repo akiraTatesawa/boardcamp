@@ -30,7 +30,7 @@ export async function checkIfCategoryExists(_req, res, next) {
       [categoryName]
     );
 
-    if (category.length !== 0 || category.name === categoryName) {
+    if (category[0]) {
       console.log(chalk.red.bold(`Category already exists`));
       return res.sendStatus(409);
     }

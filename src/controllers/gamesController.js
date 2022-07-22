@@ -21,25 +21,15 @@ export async function getGames(req, res) {
   const { name } = req.query;
 
   try {
-    if (name) {
-      const { rows: games } = await connection.query(
-        `
-            SELECT games.*, categories.name as "categoryName" FROM games
-            JOIN categories
-            ON games."categoryId" = categories.id
-            ${name ? "WHERE games.name LIKE $1" : ""}`,
-        [`${name}%`]
-      );
+    const query = `
+    SELECT games.*, categories.name as "categoryName" FROM games
+    JOIN categories
+    ON games."categoryId" = categories.id
+    ${name ? "WHERE games.name LIKE $1" : ""}`;
 
-      return res.send(games);
-    }
+    const value = name ? [`${name}%`] : null;
 
-    const { rows: games } = await connection.query(
-      `
-      SELECT games.*, categories.name as "categoryName" FROM games
-      JOIN categories
-      ON games."categoryId" = categories.id`
-    );
+    const { rows: games } = await connection.query(query, value);
 
     return res.send(games);
   } catch (error) {

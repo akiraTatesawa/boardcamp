@@ -8,9 +8,11 @@ import {
 } from "../middlewares/gamesMiddlewares.js";
 
 // Controllers
-import { postGame } from "../controllers/gamesController.js";
+import { getGames, postGame } from "../controllers/gamesController.js";
 
 export const gamesRouter = Router();
+
+gamesRouter.get("/games", getGames);
 
 gamesRouter.post(
   "/games",

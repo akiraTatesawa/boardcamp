@@ -16,3 +16,34 @@ export async function postGame(req, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function getGames(req, res) {
+  const { name } = req.query;
+
+  try {
+    if (name) {
+      const { rows: games } = await connection.query(
+        `
+            SELECT games.*, categories.name as "categoryName" FROM games
+            JOIN categories
+            ON games."categoryId" = categories.id
+            ${name ? "WHERE games.name LIKE $1" : ""}`,
+        [`${name}%`]
+      );
+
+      return res.send(games);
+    }
+
+    const { rows: games } = await connection.query(
+      `
+      SELECT games.*, categories.name as "categoryName" FROM games
+      JOIN categories
+      ON games."categoryId" = categories.id`
+    );
+
+    return res.send(games);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}

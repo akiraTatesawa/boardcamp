@@ -5,10 +5,12 @@ import {
   getCustomerById,
   getCustomers,
   postCustomer,
+  updateCustomerData,
 } from "../controllers/customersController.js";
 
 // Middlewares
 import {
+  checkIfCustomerCPFisBeingUsed,
   checkIfCustomerExists,
   validateCustomerBody,
   validateCustomerId,
@@ -24,3 +26,10 @@ customersRouter.post(
 );
 customersRouter.get("/customers", getCustomers);
 customersRouter.get("/customers/:id", validateCustomerId, getCustomerById);
+customersRouter.put(
+  "/customers/:id",
+  validateCustomerId,
+  checkIfCustomerCPFisBeingUsed,
+  validateCustomerBody,
+  updateCustomerData
+);

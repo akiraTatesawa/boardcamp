@@ -1,7 +1,10 @@
 import { Router } from "express";
 
 // Controllers
-import { postCustomer } from "../controllers/customersController.js";
+import {
+  getCustomers,
+  postCustomer,
+} from "../controllers/customersController.js";
 
 // Middlewares
 import {
@@ -17,3 +20,4 @@ customersRouter.post(
   checkIfCustomerExists,
   postCustomer
 );
+customersRouter.get("/customers", getCustomers);

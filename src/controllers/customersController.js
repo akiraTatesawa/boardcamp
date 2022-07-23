@@ -16,3 +16,22 @@ export async function postCustomer(req, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function getCustomers(req, res) {
+  const { cpf } = req.query;
+
+  try {
+    const query = `
+    SELECT * FROM customers
+    ${cpf ? "WHERE customers.cpf LIKE $1" : ""}`;
+
+    const value = cpf ? [`${cpf}%`] : null;
+
+    const { rows: customers } = await connection.query(query, value);
+
+    return res.send(customers);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}

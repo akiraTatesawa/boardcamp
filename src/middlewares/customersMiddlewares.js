@@ -37,3 +37,25 @@ export async function checkIfCustomerExists(req, res, next) {
     return res.sendStatus(500);
   }
 }
+
+export async function validateCustomerId(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const { rows: customer } = await connection.query(
+      "SELECT * FROM customers WHERE id = $1",
+      [id]
+    );
+
+    if (!customer[0]) {
+      console.log(chalk.red.bold("Customer not found"));
+      return res.sendStatus(404);
+    }
+
+    res.locals.customer = customer;
+    return next();
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}

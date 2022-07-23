@@ -2,6 +2,7 @@ import { Router } from "express";
 
 // Controllers
 import {
+  getCustomerById,
   getCustomers,
   postCustomer,
 } from "../controllers/customersController.js";
@@ -10,6 +11,7 @@ import {
 import {
   checkIfCustomerExists,
   validateCustomerBody,
+  validateCustomerId,
 } from "../middlewares/customersMiddlewares.js";
 
 export const customersRouter = Router();
@@ -21,3 +23,4 @@ customersRouter.post(
   postCustomer
 );
 customersRouter.get("/customers", getCustomers);
+customersRouter.get("/customers/:id", validateCustomerId, getCustomerById);

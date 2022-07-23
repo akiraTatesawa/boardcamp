@@ -35,3 +35,9 @@ export async function getCustomers(req, res) {
     return res.sendStatus(500);
   }
 }
+
+export function getCustomerById(_req, res) {
+  const { customer } = res.locals;
+
+  return res.send(customer);
+}

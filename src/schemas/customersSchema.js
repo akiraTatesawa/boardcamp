@@ -1,11 +1,8 @@
-import JoiBase from "@hapi/joi";
-import JoiDate from "@hapi/joi-date";
+import joi from "joi";
 
-const Joi = JoiBase.extend(JoiDate);
-
-export const customerSchema = Joi.object({
-  name: Joi.string().min(1).required(),
-  phone: Joi.string().min(10).max(11).required().pattern(/[0-9]/),
-  cpf: Joi.string().min(11).max(11).required().pattern(/[0-9]/),
-  birthday: Joi.date().format(["YYYY-MM-DD", "DD-MM-YYYY"]).utc().required(),
+export const customerSchema = joi.object({
+  name: joi.string().min(1).required(),
+  phone: joi.string().min(10).max(11).required().pattern(/[0-9]/),
+  cpf: joi.string().min(11).max(11).required().pattern(/[0-9]/),
+  birthday: joi.date().iso().required(),
 });

@@ -9,7 +9,7 @@ import {
 } from "../middlewares/rentalsMiddlewares.js";
 
 // Controllers
-import { postRental } from "../controllers/rentalsController.js";
+import { getRentals, postRental } from "../controllers/rentalsController.js";
 
 export const rentalsRouter = Router();
 
@@ -22,3 +22,5 @@ rentalsRouter.post(
   checkIfGameIsAvailable,
   postRental
 );
+
+rentalsRouter.get("/rentals", getRentals);

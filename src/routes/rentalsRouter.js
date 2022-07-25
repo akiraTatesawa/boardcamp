@@ -8,11 +8,13 @@ import {
   checkIfGameIsAvailable,
   checkIfRentalExists,
   checkIfRentalIsFinished,
+  checkIfRentalIsNotFinished,
   validateRentalBody,
 } from "../middlewares/rentalsMiddlewares.js";
 
 // Controllers
 import {
+  deleteRental,
   finishRental,
   getRentals,
   postRental,
@@ -20,7 +22,7 @@ import {
 
 export const rentalsRouter = Router();
 
-// Validar gameId, customerId e daysRented
+rentalsRouter.get("/rentals", getRentals);
 rentalsRouter.post(
   "/rentals",
   validateRentalBody,
@@ -29,11 +31,16 @@ rentalsRouter.post(
   checkIfGameIsAvailable,
   postRental
 );
-rentalsRouter.get("/rentals", getRentals);
 rentalsRouter.post(
   "/rentals/:id/return",
   checkIfRentalExists,
-  checkIfRentalIsFinished,
+  checkIfRentalIsNotFinished,
   calcDelayFee,
   finishRental
+);
+rentalsRouter.delete(
+  "/rentals/:id",
+  checkIfRentalExists,
+  checkIfRentalIsFinished,
+  deleteRental
 );

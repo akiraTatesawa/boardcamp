@@ -114,7 +114,7 @@ export async function checkIfRentalExists(req, res, next) {
   }
 }
 
-export function checkIfRentalIsFinished(_req, res, next) {
+export function checkIfRentalIsNotFinished(_req, res, next) {
   const { rental } = res.locals;
 
   if (rental.returnDate !== null) {
@@ -124,6 +124,17 @@ export function checkIfRentalIsFinished(_req, res, next) {
 
   const returnDate = dayjs().format("YYYY-MM-DD");
   res.locals.returnDate = returnDate;
+
+  return next();
+}
+
+export function checkIfRentalIsFinished(_req, res, next) {
+  const { rental } = res.locals;
+
+  if (rental.returnDate === null) {
+    console.log(chalk.red.bold("The rental is not finished"));
+    return res.sendStatus(400);
+  }
 
   return next();
 }

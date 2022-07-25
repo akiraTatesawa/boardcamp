@@ -39,7 +39,7 @@ export async function getCustomers(req, res) {
 export function getCustomerById(_req, res) {
   const { customer } = res.locals;
 
-  return res.send(customer);
+  return res.send(customer[0]);
 }
 
 export async function updateCustomerData(req, res) {

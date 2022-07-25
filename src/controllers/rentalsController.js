@@ -75,3 +75,24 @@ export async function getRentals(req, res) {
     return res.sendStatus(500);
   }
 }
+
+export async function finishRental(req, res) {
+  const { rental, returnDate, delayFee } = res.locals;
+  const { id } = rental;
+
+  try {
+    const text = `
+    UPDATE rentals
+    SET "returnDate" = $1, "delayFee" = $2
+    WHERE id = $3`;
+
+    const values = [returnDate, delayFee, id];
+
+    await connection.query(text, values);
+
+    return res.sendStatus(200);
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}

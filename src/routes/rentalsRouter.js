@@ -2,14 +2,21 @@ import { Router } from "express";
 
 // Middlewares
 import {
+  calcDelayFee,
   checkIfCustomerExists,
   checkIfGameExists,
   checkIfGameIsAvailable,
+  checkIfRentalExists,
+  checkIfRentalIsFinished,
   validateRentalBody,
 } from "../middlewares/rentalsMiddlewares.js";
 
 // Controllers
-import { getRentals, postRental } from "../controllers/rentalsController.js";
+import {
+  finishRental,
+  getRentals,
+  postRental,
+} from "../controllers/rentalsController.js";
 
 export const rentalsRouter = Router();
 
@@ -22,5 +29,11 @@ rentalsRouter.post(
   checkIfGameIsAvailable,
   postRental
 );
-
 rentalsRouter.get("/rentals", getRentals);
+rentalsRouter.post(
+  "/rentals/:id/return",
+  checkIfRentalExists,
+  checkIfRentalIsFinished,
+  calcDelayFee,
+  finishRental
+);

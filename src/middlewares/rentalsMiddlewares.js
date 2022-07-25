@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import dayjs from "dayjs";
 
 // DB connection
 import connection from "../dbStrategy/postgres.js";
@@ -82,6 +83,77 @@ export async function checkIfGameIsAvailable(req, res, next) {
     if (rentals.length >= game[0].stockTotal) {
       return res.sendStatus(400);
     }
+
+    return next();
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}
+
+export async function checkIfRentalExists(req, res, next) {
+  const { id } = req.params;
+
+  try {
+    const text = `SELECT * FROM rentals WHERE id = $1`;
+    const value = [id];
+
+    const { rows: rentals } = await connection.query(text, value);
+    const [rental] = rentals;
+
+    if (!rental) {
+      console.log(chalk.red.bold("Rental not found"));
+      return res.sendStatus(404);
+    }
+
+    res.locals.rental = rental;
+    return next();
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
+  }
+}
+
+export function checkIfRentalIsFinished(_req, res, next) {
+  const { rental } = res.locals;
+
+  if (rental.returnDate !== null) {
+    console.log(chalk.red.bold("The rental is already finished"));
+    return res.sendStatus(400);
+  }
+
+  const returnDate = dayjs().format("YYYY-MM-DD");
+  res.locals.returnDate = returnDate;
+
+  return next();
+}
+
+export async function calcDelayFee(_req, res, next) {
+  const { rental, returnDate } = res.locals;
+  const { rentDate, daysRented, gameId } = rental;
+
+  const maxReturnDate = dayjs(rentDate).add(daysRented, "day");
+  const isReturnDateBeforeRentDueDate = dayjs(returnDate).isBefore(
+    dayjs(maxReturnDate)
+  );
+
+  let delayFee = 0;
+
+  try {
+    const text = `SELECT * FROM games WHERE id = $1`;
+    const value = [gameId];
+
+    const { rows: game } = await connection.query(text, value);
+    const { pricePerDay } = game[0];
+
+    if (isReturnDateBeforeRentDueDate) {
+      delayFee = 0;
+    } else {
+      delayFee =
+        dayjs(returnDate).diff(dayjs(maxReturnDate), "day") * pricePerDay;
+    }
+
+    res.locals.delayFee = delayFee;
 
     return next();
   } catch (error) {

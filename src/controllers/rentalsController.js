@@ -1,5 +1,8 @@
 import dayjs from "dayjs";
 
+// Utils
+import { addGetRentalsQueryStrings } from "../../utils/addGetRentalsQueryStrings.js";
+
 // DB Connection
 import connection from "../dbStrategy/postgres.js";
 
@@ -36,22 +39,14 @@ export async function postRental(req, res) {
 }
 
 export async function getRentals(req, res) {
-  const { customerId, gameId } = req.query;
-  let conditionalSearch = "";
-  let conditionalValues;
+  const { customerId, gameId, status, startDate } = req.query;
 
-  if (customerId && gameId) {
-    conditionalSearch = `WHERE rentals."customerId" = $1 AND rentals."gameId" = $2`;
-    conditionalValues = [customerId, gameId];
-  } else if (customerId && !gameId) {
-    conditionalSearch = `WHERE rentals."customerId" = $1`;
-    conditionalValues = [customerId];
-  } else if (!customerId && gameId) {
-    conditionalSearch = `WHERE rentals."gameId" = $1`;
-    conditionalValues = [gameId];
-  } else {
-    conditionalValues = null;
-  }
+  const conditionalQueries = addGetRentalsQueryStrings(
+    gameId,
+    customerId,
+    startDate,
+    status
+  );
 
   const text = `
   SELECT rentals.*, json_build_object('id', customers.id, 'name', customers.name) AS customer, 
@@ -63,11 +58,15 @@ export async function getRentals(req, res) {
   ON rentals."gameId" = games.id
   JOIN categories
   ON games."categoryId" = categories.id
-  ${conditionalSearch}
+  ${
+    conditionalQueries.length > 0
+      ? `WHERE ${conditionalQueries.join(" AND ")}`
+      : ""
+  }
   `;
 
   try {
-    const { rows: rentals } = await connection.query(text, conditionalValues);
+    const { rows: rentals } = await connection.query(text);
 
     return res.send(rentals);
   } catch (error) {
